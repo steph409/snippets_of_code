@@ -32,3 +32,8 @@ def test_square_of_minus_1():
     nb = airflow.calculate_square(-1)
     assert nb == 1
 
+
+def test_airflow_returns_favorite_number_42(mock_airflow_with_dummy_class):
+    airflow_instance = airflow.Airflow()
+    nb = airflow_instance.return_favorite_number()
+    assert nb == 0

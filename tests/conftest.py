@@ -3,6 +3,13 @@ import mock
 import pytest
 
 
+@pytest.fixture
+def mock_airflow(monkeypatch):
+    mock_airflow_instance = mock.MagicMock()
+    monkeypatch.setattr(airflow, "Airflow", mock_airflow_instance)
+    return mock_airflow_instance
+
+
 class DummyAirflow:
     @staticmethod
     def return_favorite_number():
