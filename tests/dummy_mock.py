@@ -11,6 +11,5 @@ def mock_airflow(monkeypatch):
 
 
 if __name__ == '__main__':
-    # with mock.patch("airflow.Airflow", mock_airflow):
     airflow_instance = airflow.Airflow()
     airflow_instance.talk()
