@@ -7,6 +7,11 @@ def test_airflow_favorite_number():
     assert isinstance(nb, int)
 
 
+def test_airflow_favorite_number_with_mock(mock_airflow):
+    nb = mock_airflow.return_favorite_number()
+    assert nb == 42
+
+
 def test_airflow_called(mock_airflow):
     airflow_instance = airflow.Airflow()
     mock_airflow.assert_called_once()

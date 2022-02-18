@@ -2,7 +2,7 @@ import airflow
 import mock
 
 
-# @mock.patch('airflow.Airflow')
+@mock.patch('airflow.Airflow')
 def mock_airflow(monkeypatch):
     def mock_talk():
         print("BUT I WANT TO BE AIRFLOW")
@@ -11,5 +11,7 @@ def mock_airflow(monkeypatch):
 
 
 if __name__ == '__main__':
-    airflow_instance = airflow.Airflow()
-    airflow_instance.talk()
+    with mock.patch("airflow.Airflow", mock_airflow):
+        airflow_instance = airflow.Airflow()
+        airflow_instance.talk()
+    airflow.Airflow().talk()

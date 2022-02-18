@@ -17,7 +17,7 @@ class DummyAirflow:
 
 
 @pytest.fixture(autouse=True)
-def mock_airflow(monkeypatch):
+def mock_airflow_with_dummy_class(monkeypatch):
     mock_airflow_instance = mock.MagicMock()
     monkeypatch.setattr(airflow, "Airflow", mock_airflow_instance)
     mock_airflow_instance.return_value = DummyAirflow()

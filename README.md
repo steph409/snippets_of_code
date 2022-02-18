@@ -51,7 +51,16 @@ curl -X POST -d a=1 -d b=3 localhost:5000/add_numbers
 * git blame and git history
 * git tag, versioning, releases
 * branch protection rules
+  git patch
 * commit hooks (example in commit_hooks folder)
+* add a remote repository, if you have a client repo:
+How to remote push a repo to our beloved Ginkgo Gitlab:
+Setup new (empty) Ginkgo Repo
+```bash
+cd in local repo
+git add remote ginkgo {{url vom ginkgo repo}}.git
+git push
+```
 
 ```bash
 git init
@@ -64,4 +73,15 @@ chmod 755 .git/hooks/commit-msg
 ```
   
 * how to make your team mates hate you with 5 simple commands
-* git bisect, squash or no squash
+* git bisect 
+*  squash or no squash
+
+
+## Regex
+
+Very good tutorial: https://regexone.com/
+
+Test: Change the date format from DD.MM.YYYY to YYYY-MM-DD.
+01.09.1992
+Find: (\d+).(\d+).(\d+)
+Solution$3-$2-$1
