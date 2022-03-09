@@ -25,7 +25,7 @@
 
 [tool.poetry]
 # Documentation: https://python-poetry.org/docs/pyproject/
-name = 'dummy package'
+name = 'dummypackage'
 version = "0.0.2"
 authors = [
     "Stephanie Lanius <stephanie.lanius@XXX>"
