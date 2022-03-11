@@ -1,0 +1,49 @@
+steps:
+  - id: Git Credentials
+    name: 'bash'
+    args: ['-c', 'echo "https://$$GITHUB_CI_USER:$${GITHUB_CI_TOKEN}@github.com" > /workspace/.git-credentials']
+    secretEnv: ["GITHUB_CI_USER", "GITHUB_CI_TOKEN"]
+    waitFor:
+      - Build MyFancyMicroService
+  - id: Initialize Terraform
+    name: eu.gcr.io/my-fancy-gcp-project/hashicorp/terraform:0.15.0
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        echo "----- Configure Git Credential Store -----"
+        git config --global credential.helper 'store --file=/workspace/.git-credentials'
+        terraform init
+    dir: deployments/myfancymicroservice/${_ENV}
+    waitFor:
+      - Git Credentials
+
+  - id: Plan and Apply Terraform
+    name: eu.gcr.io/my-fancy-gcp-project/hashicorp/terraform:0.15.0
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        echo "install docker"
+        apk add docker
+        echo "----- Configure Git Credential Store -----"
+        git config --global credential.helper 'store --file=/workspace/.git-credentials'
+        echo "terraform plan and apply"
+        terraform plan -no-color > plan.txt
+        cat plan.txt
+        terraform apply -auto-approve
+    dir: deployments/ca/${_ENV}
+    # Cloud Build aborts all other steps
+    # on failures. We cannot run any step in parallel
+    # to `terraform plan` since aborting could lead to
+    # stale locks!
+    waitFor:
+    - Build MyFancyMicroService
+    - Initialize Terraform
+availableSecrets:
+  secretManager:
+  - versionName: projects/my-fancy-gcp-project/secrets/github-ci-user/versions/latest
+    env: 'GITHUB_CI_USER'
+  - versionName: projects/my-fancy-gcp-project/secrets/github-ci-token/versions/latest
+    env: 'GITHUB_CI_TOKEN'
+

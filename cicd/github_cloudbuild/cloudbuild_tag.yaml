@@ -1,0 +1,32 @@
+steps:
+  - id: Build MyFancyService
+    name: eu.gcr.io/my-fancy-gcp-project/maven:3.8.4-eclipse-temurin-17-alpine
+    entrypoint: mvn
+    args:
+      - clean
+      - install
+    dir: java/my-fancy-microservice
+  - id: Build PythonFancyService
+    name: python:3.9-slim
+    entrypoint: 'sh'
+    dir: python/my-fancy-microservice
+    args:
+      - '-c'
+      - |
+        pip install -r requirements.txt
+        pip install pytest black
+        black . -check
+        pytest *test.py
+  - id: docker_build_and_push_microservice
+    name: gcr.io/cloud-builders/docker
+    dir: python/my-fancy-microservice/
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        if [[ $TAG_NAME =~ v[0-9].[0-9]+.[0-9]+* ]]; then _VERSION=$(echo $TAG_NAME | cut -c 2-); else _VERSION=$SHORT_SHA; fi
+        docker build -t eu.gcr.io/$_PROJECT_ID/myfancyservice:$$_VERSION .
+        docker push eu.gcr.io/$_PROJECT_ID/myfancyservice:$$_VERSION
+    waitFor:
+      - Build MyFancyService
+      - Build PythonFancyService
